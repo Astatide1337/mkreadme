@@ -1,0 +1,50 @@
+<!-- AUTOGEN_START -->
+# {{ project_name }}
+
+![Python Version](https://img.shields.io/badge/python-{{ python_version }}-blue.svg)
+{% for badge in badges %}
+![{{ badge.name }}]({{ badge.url }})
+{% endfor %}
+
+{{ description }}
+
+## Table of Contents
+- [Installation](#installation)
+- [Usage](#usage)
+- [Dependencies](#dependencies)
+- [Directory Structure](#directory-structure)
+- [Contributing](#contributing)
+- [License](#license)
+
+## Installation
+
+```bash
+pip install -r requirements.txt
+```
+
+## Usage
+
+```bash
+python main.py
+```
+
+## Dependencies
+{% for dep in dependencies %}
+- {{ dep }}
+{% endfor %}
+
+## Directory Structure
+
+```
+{{ directory_tree }}
+```
+
+## Contributing
+{% for contributor in contributors %}
+- {{ contributor }}
+{% endfor %}
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
+<!-- AUTOGEN_END -->
