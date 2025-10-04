@@ -127,7 +127,7 @@ def gen(
     """
     api_key = load_api_key()
     if not api_key:
-        console.print(Panel("[bold]No API Key Found[/bold]\n\nPlease set your key first: [cyan]python main.py set-key YOUR_KEY[/cyan]", title="[yellow]Action Required[/yellow]", border_style="red"))
+        console.print(Panel("[bold]No API Key Found[/bold]\n\nPlease set your key first: [cyan]mkaireadme set-key YOUR_KEY[/cyan]", title="[yellow]Action Required[/yellow]", border_style="red"))
         raise typer.Exit()
 
     readme_path = Path("README.md")
@@ -137,8 +137,21 @@ def gen(
     if readme_path.exists() and not force_overwrite:
         content = readme_path.read_text(encoding="utf-8")
         if autogen_start_marker not in content or autogen_end_marker not in content:
-            console.print(Panel("[bold]Custom README.md Detected[/bold]\n\nTo enable smart updates, add `AUTOGEN` markers or use `--force-overwrite`.", title="[yellow]Action Required[/yellow]", border_style="red"))
-            raise typer.Exit()
+            console.print(Panel(
+                "[bold]Custom README.md Detected[/bold]\n\n"
+                "To enable smart updates, I need to add markers to this file.\n"
+                "This will wrap your existing content safely. It is a one-time operation.",
+                title="[yellow]Action Required[/yellow]", border_style="yellow"
+            ))
+            if typer.confirm("Proceed with adding markers?", default=True):
+                readme_path.write_text(
+                    f"{autogen_start_marker}\n\n{content.strip()}\n\n{autogen_end_marker}",
+                    encoding="utf-8"
+                )
+                console.print("✅ Markers added successfully.")
+            else:
+                console.print("[red]Aborted.[/red] To generate a new README, run again with the `--force-overwrite` flag.")
+                raise typer.Exit()
 
     client = create_openrouter_client(api_key)
     
@@ -146,8 +159,6 @@ def gen(
         project_context, user_guidance = analyze_project(Path("."), debug=debug)
         status.update(f"[bold green]🧠 Contacting OpenRouter with model '{model}'...")
         generated_content = generate_readme(client, project_context, user_guidance, model)
-
-        # Clean the AI output to prevent marker duplication
         generated_content = generated_content.replace(autogen_start_marker, "").replace(autogen_end_marker, "")
 
     try:
