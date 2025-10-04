@@ -3,120 +3,94 @@
 ```markdown
 # mkaireadme
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)
-![Typer](https://img.shields.io/badge/CLI-Typer-green.svg)
-
-An AI-powered CLI tool that generates professional README.md files for your software projects using advanced language models.
-
-## Features
-
-- 🤖 AI-driven content generation using OpenRouter models
-- 📁 Smart project analysis (scans directory structure and key files)
-- 🛠️ Customizable configuration via `.mkaireadme.yml`
-- 🔒 Secure API key management with `.env`
-- 🔄 Smart README updates with auto-gen markers
-- 🎨 Rich terminal output for better UX
-- ⚙️ Supports multiple AI models (search and browse options)
+## Description
+mkaireadme is an AI-powered CLI tool that generates professional README.md files for software projects. It analyzes your project structure, key files, and configuration to create tailored documentation using advanced language models via OpenRouter. The tool supports smart updates, preserving custom content while regenerating AI-generated sections.
 
 ## Tech Stack
-
-- **Language**: Python 3.9+
-- **CLI Framework**: Typer
-- **Terminal UI**: Rich
-- **AI Integration**: OpenAI (OpenRouter)
-- **Configuration**: YAML
-- **File Handling**: pathspec
-- **Environment Management**: python-dotenv
+- **Python 3.9+**  
+- **Typer** - CLI framework
+- **Rich** - Enhanced terminal output
+- **OpenAI** - API client for OpenRouter
+- **python-dotenv** - Environment variable management
+- **pathspec** - Gitignore pattern matching
+- **PyYAML** - Configuration file handling
 
 ## Installation
-
+Install via pip:
 ```bash
 pip install mkaireadme
 ```
 
-## Usage
+Or from source:
+```bash
+git clone https://github.com/gemini-cli/mkaireadme.git
+cd mkaireadme
+pip install .
+```
 
-### 1. Initialize Configuration
-Create a `.mkaireadme.yml` file to guide AI content generation:
+## Usage
+### Setup
+1. Initialize configuration:
 ```bash
 mkaireadme init
 ```
+   Creates `.mkaireadme.yml` for AI guidance.
 
-### 2. Set API Key
-Configure your OpenRouter API key:
+2. Set API key:
 ```bash
 mkaireadme set-key YOUR_OPENROUTER_API_KEY
 ```
 
-### 3. Browse AI Models
-List recommended models or search for specific ones:
+### Commands
+- **Generate README**:
+  ```bash
+  mkaireadme gen --model google/gemini-flash-1.5
+  ```
+  Options:
+  - `--model`: Specify AI model (use `mkaireadme models` to see options)
+  - `--force-overwrite`: Override existing README without markers
+  - `--debug`: Enable verbose output
+
+- **List Models**:
+  ```bash
+  mkaireadme models  # Show recommended models
+  mkaireadme models llama  # Search for models
+  ```
+
+### Generated README Behavior
+- Creates `README.md` with auto-generated content wrapped in `` and `` markers
+- Preserves custom content outside markers during updates
+- Analyzes project structure, key files (Python, JS, TOML, etc.), and `.gitignore` patterns
+- Leverages `.mkaireadme.yml` for project-specific guidance and exclusions
+
+### Example Workflow
 ```bash
-# Show recommended models
+# 1. Setup
+mkaireadme init
+mkaireadme set-key sk-or-xxxxxx
+
+# 2. Explore models
 mkaireadme models
 
-# Search for models (e.g., "llama", "claude")
-mkaireadme models llama
-```
+# 3. Generate README
+mkaireadme gen --model openai/gpt-4o-mini
 
-### 4. Generate README
-Create or update your `README.md`:
-```bash
-# Generate with default settings
+# 4. Edit generated sections in README.md
+# 5. Update README later (preserves custom edits)
 mkaireadme gen --model google/gemini-flash-1.5
-
-# Force overwrite existing README
-mkaireadme gen --model meta-llama/llama-3-8b-instruct --force-overwrite
-
-# Enable debug output
-mkaireadme gen --model anthropic/claude-3-haiku --debug
 ```
 
 ## Configuration
-
-### `.mkaireadme.yml`
+Edit `.mkaireadme.yml` to:
+- Define project goals
+- Provide custom instructions
+- Specify file/directory exclusions
 ```yaml
-# Project goals for AI guidance
-project_goals: "Build a scalable microservice with Python"
-
-# Custom instructions for content generation
-custom_instructions: "Focus on deployment section"
-
-# Files/directories to exclude from analysis
+project_goals: "Build scalable REST APIs"
+custom_instructions: "Emphasize security features"
 exclude:
-  - "*.log"
-  - "tests/"
-```
-
-### Auto-Gen Markers
-For smart updates, add these markers to your existing README:
-```markdown
-
-[AI-generated content]
-
-```
-
-## Contributing
-
-1. Fork the repository
-2. Create your feature branch: `git checkout -b feature-name`
-3. Commit your changes: `git commit -am 'Add feature'`
-4. Push to the branch: `git push origin feature-name`
-5. Submit a pull request
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Support
-
-- **Issues**: [GitHub Issues](https://github.com/gemini-cli/mkaireadme/issues)
-- **Documentation**: [Wiki](https://github.com/gemini-cli/mkaireadme/wiki)
-- **OpenRouter Signup**: [OpenRouter.ai](https://openrouter.ai/keys)
-
----
-
-Made with ❤️ by [Soham Bhagat](https://github.com/gemini-cli)
+  - tests/
+  - *.log
 ```
 
 <!-- AUTOGEN:END -->
