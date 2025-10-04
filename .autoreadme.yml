@@ -1,7 +1,0 @@
-# .autoreadme.yml
-# Override default settings here
-project_name: "My Awesome Project"
-description: "A custom description for my project."
-badges:
-  - name: "pylint"
-    url: "https://img.shields.io/badge/pylint-10.0-yellow.svg"

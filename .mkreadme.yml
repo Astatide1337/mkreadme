@@ -1,0 +1,15 @@
+# --- mkreadme Configuration ---
+# Use this file to guide the AI and fine-tune your README generation.
+
+# project_goals: Describe the main purpose and vision of your project.
+# This helps the AI write a better high-level description.
+project_goals: ""
+
+# custom_instructions: Provide specific instructions for the AI.
+# For example: "Emphasize the real-time features." or "Do not mention the legacy API."
+custom_instructions: ""
+
+# exclude: A list of glob patterns for files/directories to exclude from analysis.
+# This is in addition to your .gitignore file.
+exclude:
+  - ""
