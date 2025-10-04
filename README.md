@@ -27,7 +27,6 @@
 <div align="center">
 
 ![Demo Image - a code block showing the tool in action](./mkaireadme.gif) 
-*A placeholder for a real GIF, the code block below simulates the experience.*
 
 </div>
 
