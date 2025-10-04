@@ -26,7 +26,7 @@
 
 <div align="center">
 
-![Demo Image - a code block showing the tool in action](httpss://user-images.githubusercontent.com/your-image-url.png) 
+![Demo Image - a code block showing the tool in action](./mkaireadme.gif) 
 *A placeholder for a real GIF, the code block below simulates the experience.*
 
 </div>
@@ -95,7 +95,8 @@ Get your first AI-generated README in just 3 simple steps.
 The tool requires an API key from [OpenRouter](https://openrouter.ai/keys) to function. Set it once, and it will be saved locally for all future use.
 
 ```bash
-mkaireadme set-key YOUR_OPENROUTER_API_KEY```
+mkaireadme set-key YOUR_OPENROUTER_API_KEY
+```
 
 ### Step 2: Create a License (Recommended)
 
