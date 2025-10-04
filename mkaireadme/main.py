@@ -6,14 +6,14 @@ import os
 from pathlib import Path
 import pathspec
 import yaml
-from openai import OpenAI, AuthenticationError, RateLimitError, NotFoundError
+from openai import OpenAI, AuthenticationError, PermissionDeniedError, RateLimitError, NotFoundError
 from dotenv import load_dotenv, set_key as dotenv_set_key
 
 # --- Configuration ---
 app = typer.Typer(help="A CLI tool to generate professional README.md files using AI.")
 console = Console()
 dotenv_path = Path('.env')
-config_path = Path('.mkreadme.yml')
+config_path = Path('.mkaireadme.yml')
 # ---
 
 def load_api_key():
@@ -27,22 +27,22 @@ def create_openrouter_client(api_key: str) -> OpenAI:
         base_url="https://openrouter.ai/api/v1",
         api_key=api_key,
         default_headers={
-            "HTTP-Referer": "https://github.com/gemini-cli/mkreadme",
-            "X-Title": "mkreadme CLI",
+            "HTTP-Referer": "https://github.com/gemini-cli/mkaireadme",
+            "X-Title": "mkaireadme CLI",
         },
     )
 
 @app.command()
 def init():
     """
-    Creates a .mkreadme.yml file to help guide the AI.
+    Creates a .mkaireadme.yml file to help guide the AI.
     """
     if config_path.exists():
         console.print(f"[yellow]'{{config_path}}' already exists.[/yellow]")
         return
 
     default_config = """
-# --- mkreadme Configuration ---
+# --- mkaireadme Configuration ---
 # Use this file to guide the AI and fine-tune your README generation.
 
 # project_goals: Describe the main purpose and vision of your project.
@@ -96,7 +96,7 @@ def models(search: str = typer.Argument(None, help="An optional term to search f
         console.print(table)
         return
 
-    with console.status(f"[bold green]Searching for models matching '{search}'...[/bold green]"):
+    with console.status(f"[bold green]Searching for models matching '{search}'..."): 
         try:
             model_list = client.models.list().data
             model_ids = sorted([model.id for model in model_list])
@@ -147,6 +147,9 @@ def gen(
         status.update(f"[bold green]🧠 Contacting OpenRouter with model '{model}'...")
         generated_content = generate_readme(client, project_context, user_guidance, model)
 
+        # Clean the AI output to prevent marker duplication
+        generated_content = generated_content.replace(autogen_start_marker, "").replace(autogen_end_marker, "")
+
     try:
         if readme_path.exists():
             content = readme_path.read_text(encoding="utf-8")
@@ -193,18 +196,25 @@ def generate_readme(client: OpenAI, context: str, guidance: str, model_name: str
             messages=[{"role": "user", "content": prompt.strip()}],
         )
         return response.choices[0].message.content or "# README Generation Failed"
+    except PermissionDeniedError as e:
+        console.print(Panel(
+            "[bold]Model Moderation Error[/bold]\n\n"
+            f"The model '{model_name}' has a strict safety filter that incorrectly flagged your project's source code.\n\n"
+            "[bold]This is not an error with your project.[/bold]\n\n"
+            "Please try a different model from another provider.\n"
+            "Good alternatives include models from Google, Anthropic, or MistralAI.",
+            title="[yellow]Action Required[/yellow]", border_style="red"
+        ))
+        raise typer.Exit(code=1)
     except (RateLimitError, NotFoundError, AuthenticationError) as e:
         console.print(f"[bold red]API Error:[/bold red] {e}")
-        raise typer.Exit(code=1)
-    except Exception as e:
-        console.print(f"[bold red]An unexpected error occurred:[/bold red] {e}")
         raise typer.Exit(code=1)
 
 def analyze_project(base_path: Path, max_files_to_read: int = 5, debug: bool = False) -> tuple[str, str]:
     """
-    Analyzes the project, respecting .gitignore and .mkreadme.yml, and returns the code context and user guidance.
+    Analyzes the project, respecting .gitignore and .mkaireadme.yml, and returns the code context and user guidance.
     """
-    # --- User Guidance from .mkreadme.yml ---
+    # --- User Guidance from .mkaireadme.yml ---
     user_guidance = ""
     config = {}
     if config_path.exists():
@@ -229,7 +239,7 @@ def analyze_project(base_path: Path, max_files_to_read: int = 5, debug: bool = F
         with gitignore_path.open('r') as gf:
             spec_lines = gf.readlines()
     
-    # Add excludes from .mkreadme.yml
+    # Add excludes from .mkaireadme.yml
     for pattern in config.get('exclude', []):
         spec_lines.append(pattern)
     
@@ -241,7 +251,7 @@ def analyze_project(base_path: Path, max_files_to_read: int = 5, debug: bool = F
     paths_to_process = [p for p in sorted(base_path.rglob("*")) if not (spec and spec.match_file(str(p.relative_to(base_path))))] if spec else sorted(base_path.rglob("*"))
 
     ignore_dirs = {".git", ".qodo"}
-    ignore_files = {"README.md", ".env", ".mkreadme.yml"}
+    ignore_files = {"README.md", ".env", ".mkaireadme.yml"}
 
     for path in paths_to_process:
         if any(part in ignore_dirs for part in path.parts) or path.name in ignore_files:

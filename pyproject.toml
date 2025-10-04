@@ -1,17 +1,34 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
 [project]
-name = "readmecli"
-version = "0.1.0"
-description = "Add your description here"
-readme = "README.md"
-requires-python = ">=3.13"
-dependencies = [
-    "google-generativeai>=0.8.5",
-    "jinja2>=3.1.6",
-    "openai>=2.1.0",
-    "pathspec>=0.12.1",
-    "python-dotenv>=1.1.1",
-    "pyyaml>=6.0.3",
-    "rich>=14.1.0",
-    "shellingham>=1.5.4",
-    "typer>=0.19.2",
+name = "mkaireadme"
+version = "0.1.3"
+authors = [
+  { name="Soham Bhagat", email="bhagatsoham14@gmail.com" },
 ]
+description = "An AI-powered CLI to generate professional README.md files."
+readme = "README.md"
+requires-python = ">=3.9"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "typer",
+    "rich",
+    "openai",
+    "python-dotenv",
+    "pathspec",
+    "PyYAML",
+    "build>=1.3.0",
+    "twine>=6.2.0",
+]
+
+[project.scripts]
+mkaireadme = "mkaireadme.main:app"
+
+[tool.setuptools]
+packages = ["mkaireadme"]
