@@ -578,7 +578,7 @@ wheels = [
 
 [[package]]
 name = "mkaireadme"
-version = "0.2.1"
+version = "0.3.1"
 source = { editable = "." }
 dependencies = [
     { name = "build" },
@@ -586,6 +586,7 @@ dependencies = [
     { name = "pathspec" },
     { name = "python-dotenv" },
     { name = "pyyaml" },
+    { name = "requests" },
     { name = "rich" },
     { name = "twine" },
     { name = "typer" },
@@ -598,6 +599,7 @@ requires-dist = [
     { name = "pathspec" },
     { name = "python-dotenv" },
     { name = "pyyaml" },
+    { name = "requests", specifier = ">=2.32.5" },
     { name = "rich" },
     { name = "twine", specifier = ">=6.2.0" },
     { name = "typer" },

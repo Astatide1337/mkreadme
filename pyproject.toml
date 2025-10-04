@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "mkaireadme"
-version = "0.2.1"
+version = "0.3.1"
 authors = [
   { name="Soham Bhagat", email="bhagatsoham14@gmail.com" },
 ]
@@ -25,6 +25,7 @@ dependencies = [
     "PyYAML",
     "build>=1.3.0",
     "twine>=6.2.0",
+    "requests>=2.32.5",
 ]
 
 [project.scripts]
