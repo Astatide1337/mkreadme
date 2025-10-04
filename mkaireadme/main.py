@@ -159,8 +159,18 @@ def gen(
         project_context, user_guidance = analyze_project(Path("."), debug=debug)
         status.update(f"[bold green]🧠 Contacting OpenRouter with model '{model}'...")
         generated_content = generate_readme(client, project_context, user_guidance, model)
+
+        # --- Smart Cleaning of AI Output ---
+        # 1. Strip any wrapping code blocks
+        if generated_content.strip().startswith("```markdown"):
+            generated_content = generated_content.strip()[10:] # Remove ```markdown
+        if generated_content.strip().endswith("```"):
+            generated_content = generated_content.strip()[:-3] # Remove ```
+        
+        # 2. Clean any internal markers to prevent duplication
         generated_content = generated_content.replace(autogen_start_marker, "").replace(autogen_end_marker, "")
 
+    # --- File Writing Logic ---
     try:
         if readme_path.exists():
             content = readme_path.read_text(encoding="utf-8")
@@ -221,11 +231,13 @@ def generate_readme(client: OpenAI, context: str, guidance: str, model_name: str
         console.print(f"[bold red]API Error:[/bold red] {e}")
         raise typer.Exit(code=1)
 
-def analyze_project(base_path: Path, max_files_to_read: int = 5, debug: bool = False) -> tuple[str, str]:
+def analyze_project(base_path: Path, debug: bool = False) -> tuple[str, str]:
     """
     Analyzes the project, respecting .gitignore and .mkaireadme.yml, and returns the code context and user guidance.
+    Operates on a "content budget" to avoid exceeding API token limits.
     """
-    # --- User Guidance from .mkaireadme.yml ---
+    # --- Configuration & Constants ---
+    MAX_CONTEXT_CHARS = 35000
     user_guidance = ""
     config = {}
     if config_path.exists():
@@ -237,54 +249,61 @@ def analyze_project(base_path: Path, max_files_to_read: int = 5, debug: bool = F
         instructions = config.get('custom_instructions', '')
         if goals or instructions:
             user_guidance += "--- User Guidance ---\n"
-        if goals: 
-            user_guidance += f"Project Goals: {goals}\n"
-        if instructions: 
-            user_guidance += f"Instructions: {instructions}\n"
-        user_guidance += "-------------------\n\n"
+            if goals: user_guidance += f"Project Goals: {goals}\n"
+            if instructions: user_guidance += f"Instructions: {instructions}\n"
+            user_guidance += "-------------------\n\n"
 
-    # --- Code Context Analysis ---
+    # --- File Discovery and Filtering ---
     gitignore_path = base_path / '.gitignore'
     spec_lines = []
     if gitignore_path.exists():
         with gitignore_path.open('r') as gf:
             spec_lines = gf.readlines()
     
-    # Add excludes from .mkaireadme.yml
     for pattern in config.get('exclude', []):
         spec_lines.append(pattern)
     
     spec = pathspec.PathSpec.from_lines('gitwildmatch', spec_lines) if spec_lines else None
 
-    tree_str, file_contents = "", ""
-    files_read_count = 0
-    
-    paths_to_process = [p for p in sorted(base_path.rglob("*")) if not (spec and spec.match_file(str(p.relative_to(base_path))))] if spec else sorted(base_path.rglob("*"))
-
-    ignore_dirs = {".git", ".qodo"}
+    candidate_files = []
+    ignore_dirs = {".git", ".qodo", ".venv", "dist", "build"}
     ignore_files = {"README.md", ".env", ".mkaireadme.yml"}
+    source_extensions = {".py", ".js", ".ts", ".go", ".java", ".toml", ".json", ".yml"}
 
-    for path in paths_to_process:
+    for path in base_path.rglob("*"):
         if any(part in ignore_dirs for part in path.parts) or path.name in ignore_files:
             continue
-        
-        relative_path = path.relative_to(base_path)
-        if spec and any(spec.match_file(str(p)) for p in relative_path.parents):
-             continue
+        if spec and spec.match_file(str(path.relative_to(base_path))):
+            continue
+        if not path.is_file():
+            continue
+        if path.suffix in source_extensions:
+            candidate_files.append(path)
 
-        depth = len(relative_path.parts) - 1
-        indent = "    " * depth
-        if path.is_dir():
-            tree_str += f"{indent}├── {path.name}/\n"
-        else:
-            tree_str += f"{indent}└── {path.name}\n"
-            if files_read_count < max_files_to_read and path.suffix in {".py", ".js", ".ts", ".go", ".java", ".toml", ".json"}:
-                try:
-                    if debug: console.print(f"[cyan]DEBUG: Reading file for context: {path.name}[/cyan]")
-                    content = path.read_text(encoding="utf-8")
-                    file_contents += f"\n--- START OF {path.name} ---\n{content}\n--- END OF {path.name}---\n"
-                    files_read_count += 1
-                except Exception: pass
+    # --- Smart Content Selection (Smallest Files First) ---
+    candidate_files.sort(key=lambda p: p.stat().st_size)
+
+    tree_str, file_contents = "", ""
+    current_content_size = 0
+
+    for path in candidate_files:
+        try:
+            content_to_add = path.read_text(encoding="utf-8")
+            content_chunk = f"\n--- START OF {path.name} ---\n{content_to_add}\n--- END OF {path.name} ---\n"
+            
+            if current_content_size + len(content_chunk) > MAX_CONTEXT_CHARS:
+                if debug: console.print(f"[yellow]DEBUG: Content budget reached. Stopping analysis.[/yellow]")
+                break
+
+            if debug: console.print(f"[cyan]DEBUG: Reading file for context: {path.name} ({path.stat().st_size} bytes)[/cyan]")
+            file_contents += content_chunk
+            current_content_size += len(content_chunk)
+        except Exception:
+            pass # Ignore files that can't be read
+
+    # --- Directory Tree Generation (from filtered files) ---
+    # This part is simplified for brevity as the file content is more important
+    tree_str = "A brief overview of the project structure is inferred from the file contents below."
 
     context_package = f"PROJECT DIRECTORY STRUCTURE:\n{tree_str}\n\nKEY FILE CONTENTS:\n{file_contents}"
     if debug: console.print(f"[cyan]DEBUG: Total context package size: {len(context_package)} characters[/cyan]")
