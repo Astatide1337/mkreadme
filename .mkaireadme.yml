@@ -3,11 +3,11 @@
 
 # project_goals: Describe the main purpose and vision of your project.
 # This helps the AI write a better high-level description.
-project_goals: ""
+project_goals: "A Python CLI tool for generating professional README files"
 
 # custom_instructions: Provide specific instructions for the AI.
 # For example: "Emphasize the real-time features." or "Do not mention the legacy API."
-custom_instructions: ""
+custom_instructions: "Emphasize AI integration and cross-platform compatibility"
 
 # exclude: A list of glob patterns for files/directories to exclude from analysis.
 # This is in addition to your .gitignore file.
