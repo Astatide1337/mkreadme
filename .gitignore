@@ -12,3 +12,4 @@ wheels/
 PRD.txt
 .env
 .env.*
+.pypirc
