@@ -11,3 +11,4 @@ wheels/
 
 PRD.txt
 .env
+.env.*
