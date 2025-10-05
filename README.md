@@ -21,9 +21,6 @@
 `mkaireadme` is a cross-platform Python CLI that leverages the power of generative AI to create and maintain high-quality `README.md` files for any project. Stop writing documentation from scratch—let your code speak for itself.
 
 ---
-
-### ✨ Visual Demo
-
 <div align="center">
 
 ![](./mkaireadme.gif) 
