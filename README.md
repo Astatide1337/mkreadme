@@ -26,7 +26,7 @@
 
 <div align="center">
 
-![Demo Image - a code block showing the tool in action](./mkaireadme.gif) 
+![](./mkaireadme.gif) 
 
 </div>
 
