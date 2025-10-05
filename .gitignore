@@ -13,3 +13,5 @@ PRD.txt
 .env
 .env.*
 .pypirc
+
+temp.txt

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "mkaireadme"
-version = "0.3.1"
+version = "0.3.2"
 authors = [
   { name="Soham Bhagat", email="bhagatsoham14@gmail.com" },
 ]

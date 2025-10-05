@@ -1,175 +1,121 @@
+<!-- AUTOGEN:START -->
 
-<div align="center">
-
-# mkaireadme
-
-**An AI-powered CLI to generate professional README.md files in seconds.**
-
-</div>
-
-<div align="center">
-
-[![PyPI Version](https://img.shields.io/pypi/v/mkaireadme.svg?style=for-the-badge&logo=pypi&color=blue)](https://pypi.org/project/mkaireadme/)
-[![Python Versions](https://img.shields.io/pypi/pyversions/mkaireadme.svg?style=for-the-badge&logo=python&color=blue)](https://pypi.org/project/mkaireadme/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg?style=for-the-badge)](https://github.com/psf/black)
-
-</div>
-
-<br>
-
-`mkaireadme` is a cross-platform Python CLI that leverages the power of generative AI to create and maintain high-quality `README.md` files for any project. Stop writing documentation from scratch—let your code speak for itself.
+n
+<p align="center">
+  <h1>mkaireadme</h1>
+  <p>An AI-powered CLI to generate professional README.md files.</p>
+  <p align="center">
+    <a href="https://badge.fury.io/py/mkaireadme"><img src="https://badge.fury.io/py/mkaireadme.svg" alt="PyPI version"></a>
+    <a href="https://www.python.org"><img src="https://img.shields.io/badge/python-3.9+-blue.svg" alt="Python Version"></a>
+    <a href="https://github.com/gemini-cli/mkaireadme/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
+    <a href="https://openrouter.ai"><img src="https://img.shields.io/badge/OpenRouter-API-orange" alt="OpenRouter API"></a>
+  </p>
+</p>
 
 ---
 
-### ✨ Visual Demo
+## 🚀 Key Features
 
-<div align="center">
-
-![Demo Image - a code block showing the tool in action](./mkaireadme.gif) 
-
-</div>
-
-```bash
-# Navigate to your project directory
-$ cd my-awesome-project
-
-# Run the generation command
-$ mkaireadme gen --model google/gemini-flash-1.5
-
-🤖 Analyzing project context...
-🧠 Contacting google/gemini-flash-1.5 via OpenRouter...
-📝 Writing README.md...
-
-✅ Successfully created README.md!
-```
+- 🤖 **AI-Powered Generation**: Leverages OpenRouter's AI models to create professional, context-aware README files
+- 🔄 **Smart Updates**: Intelligently updates existing READMEs using special markers without overwriting custom content
+- 🔒 **Secure API Management**: Securely store and manage your OpenRouter API keys
+- 📁 **Project Analysis**: Automatically analyzes your project structure and source code to generate relevant documentation
+- 🛠️ **Built-in Tools**: Includes commands for license generation, model discovery, and configuration management
 
 ---
 
-## 📋 Table of Contents
-
-- [Features](#-key-features)
-- [Tech Stack](#-tech-stack)
-- [Installation](#-installation)
-- [Getting Started](#-getting-started)
-- [Command Reference](#-command-reference)
-- [Configuration](#-configuration)
-- [Contributing](#-contributing)
-- [License](#-license)
-
-## ✨ Key Features
-
--   🧠 **AI-Powered Generation**: Uses state-of-the-art language models (via OpenRouter) to analyze your project and generate a tailored, comprehensive README.
--   🌐 **Cross-Platform Compatibility**: Works seamlessly on Windows, macOS, and Linux.
--   🔄 **Smart Updates**: Intelligently updates existing READMEs by injecting new content between markers, preserving your custom sections.
--   🛠️ **Deep Customization**: Guide the AI with a simple `.mkaireadme.yml` file to specify project goals and custom instructions.
--   📜 **License Management**: Includes built-in license generation (from a list of common templates) and automatic README integration.
--   🤖 **Flexible Model Selection**: Browse and choose from dozens of AI models to find the perfect fit for your needs and budget.
--   💰 **Content Budgeting**: Smartly analyzes large projects by prioritizing key files, ensuring you stay within the AI model's token limits.
-
-## 🛠️ Tech Stack
-
--   **Python 3.9+**
--   **Typer**: Modern CLI framework for a great user experience.
--   **Rich**: Beautiful terminal styling, tables, and progress indicators.
--   **OpenAI**: Official library for robust AI integration via OpenRouter.
--   **python-dotenv**: Secure environment variable management.
--   **pathspec**: Gitignore-style file exclusion for precise context analysis.
--   **PyYAML**: Simple and clean configuration file handling.
-
-## 🚀 Installation
-
-Install `mkaireadme` directly from PyPI with a single command:
+## 💡 Installation
 
 ```bash
 pip install mkaireadme
 ```
 
-## 🏁 Getting Started
+> **Note**: Requires Python 3.9 or higher
 
-Get your first AI-generated README in just 3 simple steps.
+---
 
-### Step 1: Set Your API Key
+## 📖 Usage
 
-The tool requires an API key from [OpenRouter](https://openrouter.ai/keys) to function. Set it once, and it will be saved locally for all future use.
-
+### Getting Started
 ```bash
-mkaireadme set-key YOUR_OPENROUTER_API_KEY
-```
+# Set your OpenRouter API key
+mkaireadme set-key YOUR_API_KEY
 
-### Step 2: Create a License (Recommended)
+# Initialize a configuration file
+mkaireadme init
 
-A `LICENSE` file is crucial for any serious project. `mkaireadme` can create one for you.
-
-```bash
-mkaireadme license
-```
-This will prompt you to choose from a list of popular open-source licenses.
-
-### Step 3: Generate Your README!
-
-Navigate to your project's root directory and run the `gen` command.
-
-```bash
-# Use the recommended Gemini Flash model
+# Generate a README
 mkaireadme gen --model google/gemini-flash-1.5
 ```
 
-That's it! Your new `README.md` is ready. To update it later after making changes to your project, just run the same command again.
-
-## 📚 Command Reference
-
-### `gen`
-The core command to generate or update the README.
-
-| Option              | Description                                                    | Example                                     |
-| :------------------ | :------------------------------------------------------------- | :------------------------------------------ |
-| `--model`           | **(Required)** The AI model to use.                            | `anthropic/claude-3-haiku`                  |
-| `--force-overwrite` | Replace the entire README, ignoring update markers.            | `--force-overwrite`                         |
-| `--debug`           | Enable verbose logging for troubleshooting.                    | `--debug`                                   |
-
-### `models`
-Browse and search for available AI models on OpenRouter.
-
+### Key Commands
 ```bash
-# Show a list of recommended models
+# Generate README with specific model
+mkaireadme gen --model anthropic/claude-3-haiku
+
+# Force overwrite existing README
+mkaireadme gen --force-overwrite
+
+# List available AI models
 mkaireadme models
 
-# Search for a specific model provider or name
-mkaireadme models llama
+# Create a LICENSE file
+mkaireadme license
+
+# Enable debug output
+mkaireadme gen --debug
 ```
 
-### `license`
-An interactive command to generate a `LICENSE` file for your project.
+---
 
-### `set-key`
-Securely saves your OpenRouter API key for future use.
+## 🔧 Tech Stack
+
+- **Python 3.9+**: Core language
+- **Typer**: CLI framework
+- **Rich**: Beautiful terminal output
+- **OpenAI**: Client for OpenRouter API
+- **python-dotenv**: Environment variable management
+- **pathspec**: Gitignore pattern parsing
+- **PyYAML**: Configuration file handling
+- **requests**: License template fetching
+
+---
 
 ## ⚙️ Configuration
 
-For more control over the AI's output, create a `.mkaireadme.yml` file in your project's root directory.
+Create a `.mkaireadme.yml` file to guide AI generation:
 
 ```yaml
-# .mkaireadme.yml
+# Project-specific goals
+project_goals: "A Python CLI tool for generating professional README files"
 
-# Provide high-level goals to guide the AI's description
-project_goals: "To build a fast, lightweight, and user-friendly CLI tool for automating documentation."
+# Custom instructions for AI
+custom_instructions: "Emphasize AI integration and cross-platform compatibility"
 
-# Give specific instructions to include in the AI prompt
-custom_instructions: "Emphasize the cross-platform compatibility. Mention that it is open-source and contributions are welcome."
-
-# Exclude files or directories from the analysis to save tokens
+# Files/directories to exclude
 exclude:
   - "docs/"
-  - "tests/"
   - "*.log"
-  - "dist/"
+  - "tests/"
 ```
+
+---
 
 ## 🤝 Contributing
 
-Contributions are welcome! Whether it's a bug report, a feature request, or a pull request, your input is valued. Please feel free to open an issue to discuss your ideas.
+Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
 
-## 📜 License
+---
+
+## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 👨‍💻 Contact
+
+Soham Bhagat - bhagatsoham14@gmail.com  
+Project Link: [https://github.com/gemini-cli/mkaireadme](https://github.com/gemini-cli/mkaireadme)
+
+<!-- AUTOGEN:END -->

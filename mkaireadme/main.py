@@ -211,20 +211,33 @@ def gen(
     console.print(generated_content)
 
 def generate_readme(client: OpenAI, context: str, guidance: str, model_name: str) -> str:
-    """Generates a README file using the OpenRouter API."""
+    """Generates a README file using the OpenRouter API with a flexible and powerful prompt."""
     prompt = f"""
-    As an expert technical writer, create a professional README.md file for a software project.
-    Based on the following context (directory structure and key file contents) and user guidance, generate a complete README.
-    
-    {guidance}
+    As an expert technical writer and open-source project designer, your primary goal is to create a README.md file that is **clear, professional, and easy for a new developer to understand.**
+    Based on the project evidence provided, generate a complete and visually appealing README. Your response should be a single Markdown file.
 
-    The README should have standard sections like Project Title, Description, Tech Stack, Installation, and Usage.
-    If the user guidance mentions a license, be sure to add a "License" section that references the LICENSE file.
-    Generate only the Markdown content. Do not include any other explanatory text.
-    
-    Here is the code context:
+    ---
+
+    ### **Guiding Principles for Your README:**
+
+    1.  **Start with a "Hook":** Begin with a strong, visually appealing hero section. Use HTML for a centered layout. This section must include the project's title, a concise one-line description, and 3-4 relevant shields.io badges.
+    2.  **Explain the "Why":** Immediately after the hook, create a "Key Features" or "Introduction" section. Use bullet points (with emojis for visual appeal) to explain what the project does and why it's useful.
+    3.  **Show, Don't Just Tell:** Provide clear, copy-pasteable code blocks for "Installation" and "Usage." The commands you provide must be idiomatic for the project's ecosystem (e.g., `npm install` for a Node.js project, `pip install` for Python).
+    4.  **Be Comprehensive but Concise:** Include other relevant sections as you see fit, based on the evidence. Good optional sections include "Tech Stack," "Configuration," "Contributing," and "License." Only include a section if you have meaningful information to put in it.
+    5.  **Maintain a Professional Aesthetic:** Use Markdown formatting (headings, bold text, lists) to create a clean, well-structured, and easily scannable document.
+
+    ---
+
+    **Final Instructions:**
+    - Do not invent features or commands that are not supported by the evidence.
+    - Do not include images or logos unless one is explicitly found in the project's assets.
+    - Generate only the Markdown content for the README.md file.
+
+    Here is the project evidence:
     ---
     {context}
+    ---
+    {guidance}
     ---
     """
     try:
